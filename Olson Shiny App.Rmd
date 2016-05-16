@@ -1,0 +1,1370 @@
+---
+title: "Intertextuality of the Torah"
+author: "Daniel Olson"
+date: "Spring 2016"
+output: html_document
+runtime: shiny
+resource_files:
+- mydataframe1.csv
+- mydataframe2.csv
+- mydataframe47.csv
+- mydataframe46.csv
+- mydataframe3.csv
+- mydataframe5.csv
+- mydataframe4.csv
+- mydataframe6.csv
+- mydataframe7.csv
+- mydataframe8.csv
+- mydataframe9.csv
+- mydataframe10.csv
+- mydataframe11.csv
+- mydataframe12.csv
+- mydataframe13.csv
+- mydataframe14.csv
+- mydataframe15.csv
+- mydataframe16.csv
+- mydataframe17.csv
+- mydataframe18.csv
+- mydataframe19.csv
+- mydataframe20.csv
+- mydataframe21.csv
+- mydataframe22.csv
+- mydataframe23.csv
+- mydataframe24.csv
+- mydataframe25.csv
+- mydataframe26.csv
+- mydataframe27.csv
+- mydataframe28.csv
+- mydataframe29.csv
+- mydataframe30.csv
+- mydataframe31.csv
+- mydataframe32.csv
+- mydataframe33.csv
+- mydataframe34.csv
+- mydataframe35.csv
+- mydataframe36.csv
+- mydataframe37.csv
+- mydataframe38.csv
+- mydataframe39.csv
+- mydataframe40.csv
+- mydataframe41.csv
+- mydataframe42.csv
+- mydataframe43.csv
+- mydataframe44.csv
+- mydataframe45.csv
+---
+
+This project seeks to describe the 'intertextuality' of the Torah, or the 5 books of Moses, by examining more than 20 years of commentaries written about the weekly Parashas (or Torah portions). There are 54 parashas in the Torah. In some years, 14 of those parashas are paired with an adjacent parasha. I decided to count those parashas together, rather than separately for this project. That gives a total of 47 Parashas.
+
+
+The following drop-down menu provides a brief summary of all 47 Parashas, along with their book.
+
+```{r, echo=FALSE}
+
+#Creating a look-up table for Parasha, Book, and Summary. I wrote the summaries myself. 
+
+Parasha <- c("Bereshit", "Noach", "Lech Lecha", "VaYera", "Chayei Sarah", 
+            "Toldot", "VaYetze", "VaYishlah", "VaYeshev", "Miketz",
+            "VaYiggash", "VaYechi", "Shemot", "VaEra", "Bo", 
+            "Beshallah", "Yitro", "Mishpatim", "Terumah", "Tetzaveh", 
+            "Ki Tissa", "VaYakhel-Pekudei", "VaYikra", "Tzav", "Shemini", "Tazria-Metzora",
+            "Aharei Mot-Kedoshim", "Emor", "Behar-Behukkotai", "BaMidbar", "Naso", 
+            "Behaalotcha", "Shlach Lecha", "Korach", "Chukat-Balak", "Pinchas", 
+            "Mattot-Masei", "Devarim", "Vaetchanan", "Eikev", "Reeh", "Shoftim", 
+            "Ki Tetze", "Ki Tavo", "Nitzavim-VaYelech", "Haazinu", "Vzot HaBracha")
+Book <- c("Genesis", "Genesis", "Genesis", "Genesis", "Genesis", "Genesis",
+           "Genesis", "Genesis", "Genesis", "Genesis", "Genesis", "Genesis",
+            "Exodus", "Exodus", "Exodus", "Exodus", "Exodus", 
+           "Exodus", "Exodus", "Exodus", "Exodus", "Exodus", 
+           "Leviticus", "Leviticus", "Leviticus", "Leviticus", "Leviticus", 
+           "Leviticus", "Leviticus", "Numbers", "Numbers", "Numbers", 
+           "Numbers", "Numbers", "Numbers", "Numbers", "Numbers", 
+           "Deuteronomy", "Deuteronomy", "Deuteronomy", "Deuteronomy", "Deuteronomy", 
+           "Deuteronomy", "Deuteronomy", "Deuteronomy", "Deuteronomy", "Deuteronomy")
+Summary <- c("Creation, Adam & Eve, Cain & Abel", "Noah's flood, Tower of Babel", "Abraham's journey to Canaan, covenant", "Birth and binding of Isaac", "Burying Sarah and finding a bride for Isaac", "Jacob and Esau fight", "Jacob's ladder, Jacob marries Leah and Rachel", "Jacob gets a name change to Israel, Jacob and Esau reunite", "Joseph thrown into a pit and sold to Egypt", "Joseph interprets Pharaoh's dreams", "Joseph, his brothers, and his father reunite", "Jacob and Joseph die", "Moses charged to free Israelites", "First seven plagues", "Last three plagues, laws of Passover", "Crossing the Red Sea", "Receiving the 10 commandments", "Various laws", "Instructions for Tabernacle", "Instructions for High Priest's outfit", "Golden Calf", "Building the Tabernacle", "Sacrifices", "More sacrifices", "Aaron's sons die, laws of Kashrut", "Ritual impurity", "Yom Kippur laws, holiness code", "Holiday laws", "Jubilee year, blessings and curses", "Census", "Dedication of Tabernacle", "Israelites complain, Miriam gossips about Moses", "Spies give a bad report of the land of Israel", "Korach attempts a rebellion", "Moses strikes a rock, Balaam tries to curse the Israelites", "Pinchas gets rewarded for being a zealot", "Rules about vows and a travelogue", "Moses' recap of the Israelites' journey", "10 Commandments and Shema", "Food", "More holiday laws", "Justice, justice, you shall pursue", "Various laws of the Land", "Blessings and Curses", "A message of Choose Life!", "Moses' farewell poem", "Moses' death")
+
+#Creating a function that when fed the name of a Parasha will return the Summary and Book. 
+
+library(shiny)
+ParashaSummary <- data.frame(Parasha, Book, Summary)
+
+ParashaSumm <- function(Portion) {
+  ParashaSummary <- ParashaSummary[ParashaSummary$Parasha==Portion, ]
+  ParashaSummary <- ParashaSummary[ ,c(2,3)]
+  return(ParashaSummary)
+}
+
+#Using the shiny package to create a drop down menu to select which Parasha. 
+
+selectInput("Portion", "Which Parasha?", c("Bereshit", "Noach", "Lech Lecha", "VaYera", "Chayei Sarah", "Toldot", "VaYetze", "VaYishlah", "VaYeshev", "Miketz", "VaYiggash", "VaYechi", "Shemot", "VaEra", "Bo", "Beshallah", "Yitro", "Mishpatim", "Terumah", "Tetzaveh", "Ki Tissa", "VaYakhel-Pekudei", "VaYikra", "Tzav", "Shemini", "Tazria-Metzora", "Aharei Mot-Kedoshim", "Emor", "Behar-Behukkotai", "BaMidbar", "Naso", "Behaalotcha", "Shlach Lecha", "Korach", "Chukat-Balak", "Pinchas", "Mattot-Masei", "Devarim", "Vaetchanan", "Eikev", "Reeh", "Shoftim", "Ki Tetze", "Ki Tavo", "Nitzavim-VaYelech", "Haazinu", "Vzot HaBracha"), multiple=FALSE)
+
+renderTable({ParashaSumm(input$Portion)})
+```
+
+The commentaries come from archives on the website of the Jewish Theological Seminary, the flagship institution of the Conservative Movement of Judaism in the United States. The commentaries have different authors, though for the first 12 years or so (Fall 1993-Spring 2005) they were largely written by the Seminary's former Chancellor Rabbi Ismar Schorsch. Since then a number of different faculty, administrators, and students have contributed to the commentaries.
+
+Those archives can be found by clicking on this link: http://www.jtsa.edu/jts-torah-online
+
+Most of the commentaries cite specific verses from the Torah and other parts of the Bible. The citations occurred in a pretty regular format: a number representing a verse's chapter number, followed by a colon, followed by another number representing a verse's verse number. The word immediately before this number combination was usually the name of a biblical book (Genesis, Exodus, etc.) or an abbreviation for a biblical book (Gen. for Genesis, Ps. for Psalms, etc). 
+
+When a different word occurred before a number combination in a commentary the vast majority of the time the verse came from the commentary's own book. An example from a commentary on Parashat Bereishit could be, "In verse 1:27, humans are created in the image of God." Parashat Bereishit is in the Book of Genesis and the verse being described is also from Genesis. Other words that came before chapter/verse combinations not from the same book had to replaced manually, which was by far the most labor intensive part of the project. 
+
+The following R code chunks will demonstrate the process of identifying "Word chapter:verse" combinations and replacing words with the proper book name. For chapters and verses outside of the Hebrew Bible (or occasionally the Gospels), the term "ExtraBiblical"" was used. 
+
+The example here is for Parashat Devarim, the first parasha of the book of Deuteronomy.
+
+```{r, warning=FALSE, eval=FALSE}
+#Reading all of the commentaries on the book of Numbers into R. For this test I combined all the
+#different Torah portions into one big text document
+readLinesDevarim <- readLines("C:\\Devarim.txt")
+
+#Getting rid of any opening parentheses that might interfere with the code identifying verses.
+readLinesDevarim <- gsub("\\(", "", readLinesDevarim)
+
+#Identifying various combinations of numbers before and after colons to get specific verse numbers
+#used in the text. There are six different categories A:A, AA:A, AAA:A, AA:A, AA:AA, and AAA:AA for 
+#the different possible combination of digits in verses. 
+
+DevarimCitedVerses1 <- grep("[^0-9][0-9]:[0-9][^0-9]", readLinesDevarim, value=T)
+DevarimCitedVerses2 <- grep("[0-9][0-9]:[0-9][^0-9]", readLinesDevarim, value=T)
+DevarimCitedVerses3 <- grep("[^0-9][0-9]:[0-9][0-9]", readLinesDevarim, value=T)
+DevarimCitedVerses4 <- grep("[0-9][0-9]:[0-9][0-9]", readLinesDevarim, value=T)
+DevarimCitedVerses5 <- grep("[0-9][0-9][0-9]:[0-9][^0-9]", readLinesDevarim, value=T)
+DevarimCitedVerses6 <- grep("[0-9][0-9][0-9]:[0-9][0-9]", readLinesDevarim, value=T)
+
+#This code helps me get the word immediately before a verse (which is almost always the name of the
+# biblical book containing it). I repeat it for each possible combination of verse number.
+
+pattern1 <- "(\\S+)[^0-9][0-9]:[0-9][^0-9]"
+match1   <- gregexpr(pattern1, DevarimCitedVerses1)
+words1   <- regmatches(DevarimCitedVerses1, match1)
+words1<-words1[lapply(words1, length)>0]
+words1<-unlist(words1)
+
+
+pattern2 <- "(\\S+) [0-9][0-9]:[0-9][^0-9]"
+match2   <- gregexpr(pattern2, DevarimCitedVerses2)
+words2   <- regmatches(DevarimCitedVerses2, match2)
+words2<-words2[lapply(words2, length)>0]
+words2<-unlist(words2)
+
+
+pattern3 <- "(\\S+)[^0-9][0-9]:[0-9][0-9]"
+match3   <- gregexpr(pattern3, DevarimCitedVerses3)
+words3   <- regmatches(DevarimCitedVerses3, match3)
+words3<-words3[lapply(words3, length)>0]
+words3<-unlist(words3)
+
+pattern4 <- "(\\S+) [0-9][0-9]:[0-9][0-9]"
+match4   <- gregexpr(pattern4, DevarimCitedVerses4)
+words4   <- regmatches(DevarimCitedVerses4, match4)
+words4 <- words4[lapply(words4, length)>0]
+words4<-unlist(words4)
+
+pattern5 <- "(\\S+) [0-9][0-9][0-9]:[0-9][^0-9]"
+match5 <- gregexpr(pattern5, DevarimCitedVerses5)
+words5 <- regmatches(DevarimCitedVerses5, match5)
+words5<-words5[lapply(words5, length)>0]
+words5<-unlist(words5)
+
+pattern6<-"(\\S+) [0-9][0-9][0-9]:[0-9][0-9]"
+match6<-gregexpr(pattern6, DevarimCitedVerses6)
+words6<-regmatches(DevarimCitedVerses6, match6)
+words6<-words6[lapply(words6, length)>0]
+words6<-unlist(words6)
+
+#Combining into one character vector. 
+
+DevarimCitedVersesClean<-c(words1, words2, words3, words4, words5, words6)
+
+
+#Cleaning things up by getting rid of extraneous punctuation, and replacing all words with names
+#of biblical books or the phrase "ExtraBiblical" for cited material outside the Bible.
+
+DevarimCitedVersesClean<-gsub("\\(", "", DevarimCitedVersesClean)
+DevarimCitedVersesClean<-gsub("\\[", "", DevarimCitedVersesClean)
+DevarimCitedVersesClean<-gsub("\\)", "", DevarimCitedVersesClean)
+
+DevarimCitedVersesClean<-gsub("[^[:alnum:]: ]", "", DevarimCitedVersesClean)
+
+DevarimCitedVersesClean<-gsub("you3:9", "Genesis 3:9", DevarimCitedVersesClean)
+DevarimCitedVersesClean<-gsub("Taanit ", "ExtraBiblical ", DevarimCitedVersesClean)
+DevarimCitedVersesClean<-gsub("Sanhedrin ", "ExtraBiblical ", DevarimCitedVersesClean)
+DevarimCitedVersesClean<-gsub("Rabbah ", "ExtraBiblical ", DevarimCitedVersesClean)
+DevarimCitedVersesClean<-gsub("Ps ", "Psalms ", DevarimCitedVersesClean)
+DevarimCitedVersesClean<-gsub("people ", "Lamentations ", DevarimCitedVersesClean)
+DevarimCitedVersesClean<-gsub("Lam ", "Lamentations ", DevarimCitedVersesClean)
+DevarimCitedVersesClean<-gsub("Exod ", "Exodus ", DevarimCitedVersesClean)
+DevarimCitedVersesClean<-gsub("cityLamentations ", "Lamentations ", DevarimCitedVersesClean)
+DevarimCitedVersesClean<-gsub("also ", "Kings ", DevarimCitedVersesClean)
+DevarimCitedVersesClean<-gsub("city ", "Isaiah ", DevarimCitedVersesClean)
+```
+
+I wrote the Extrawords function to quickly replace most 'non-book' words before the Chapter:Verse combination with the name of the Book associated with the commentary. Using this function saved a tremendous amount of time. Here is that function:
+
+```{r, eval=FALSE}
+#The function works by replacing any word comprised of alphabetical characters A-Z and a-z (upper and lower case) with the particular word that is fed into the function (the name of one of the 5 books of the Torah) unless the word is already one of the books of the Bible or is labeled as "ExtraBiblical".
+
+ExtraWords <- function(b, p) {
+  gsub('\\bGenesis\\b(*SKIP)(*F)|\\bExodus\\b(*SKIP)(*F)|\\bLeviticus\\b(*SKIP)(*F)|\\bNumbers\\b(*SKIP)(*F)|\\bDeuteronomy\\b(*SKIP)(*F)|\\bJoshua\\b(*SKIP)(*F)|\\bJudges\\b(*SKIP)(*F)|\\bSamuel\\b(*SKIP)(*F)|\\bKings\\b(*SKIP)(*F)|\\bIsaiah\\b(*SKIP)(*F)|\\bJeremiah\\b(*SKIP)(*F)|\\bEzekiel\\b(*SKIP)(*F)|\\bHosea\\b(*SKIP)(*F)|\\bJoel\\b(*SKIP)(*F)|\\bAmos\\b(*SKIP)(*F)|\\bObadiah\\b(*SKIP)(*F)|\\bJonah\\b(*SKIP)(*F)|\\bMicah\\b(*SKIP)(*F)|\\bNahum\\b(*SKIP)(*F)|\\bHabakkuk\\b(*SKIP)(*F)|\\bZephaniah\\b(*SKIP)(*F)|\\bHaggai\\b(*SKIP)(*F)|\\bZechariah\\b(*SKIP)(*F)|\\bMalachi\\b(*SKIP)(*F)|\\bPsalms\\b(*SKIP)(*F)|\\bProverbs\\b(*SKIP)(*F)|\\bJob\\b(*SKIP)(*F)|\\bSongofSongs\\b(*SKIP)(*F)|\\bRuth\\b(*SKIP)(*F)|\\bLamentations\\b(*SKIP)(*F)|\\bEcclesiastes\\b(*SKIP)(*F)|\\bEsther\\b(*SKIP)(*F)|\\bDaniel\\b(*SKIP)(*F)|\\bEzra\\b(*SKIP)(*F)|\\bNehemiah\\b(*SKIP)(*F)|\\bChronicles\\b(*SKIP)(*F)|\\bMatthew\\b(*SKIP)(*F)|\\bMark\\b(*SKIP)(*F)|\\bLuke\\b(*SKIP)(*F)|\\bJohn\\b(*SKIP)(*F)|\\bExtraBiblical\\b(*SKIP)(*F)|([A-Za-z]+)', 
+       b, p, perl=TRUE)
+}
+```
+
+
+Continuing to clean up the Devarim citations:
+
+```{r, eval=FALSE}
+DevarimCitedVersesClean<-ExtraWords("Deuteronomy", DevarimCitedVersesClean)
+
+DevarimCitedVersesClean<-sort(DevarimCitedVersesClean)
+
+#Manually replacing vector elements that were just numbers with no words with the names of the verses.
+DevarimCitedVersesClean<-DevarimCitedVersesClean[-c(1,2)]
+
+DevarimCitedVersesClean<-c(DevarimCitedVersesClean, "Deuteronomy 1:8", "Lamentations 2:1",
+                           "Lamentations 4:1")
+
+DevarimCitedVersesClean<-strsplit(DevarimCitedVersesClean, " ")
+
+#Turning the character vector into a data frame for analysis
+
+dfDevarimCitedVerses <- data.frame(matrix(unlist(DevarimCitedVersesClean), nrow=74, byrow=T))
+```
+
+
+After converting into a data frame I wanted to separate Chapter and verse into two separate columns. I also wanted wanted to add a column for the Book Order of each cited verse as well as the associated Parasha with each cited verse. Professor Bergner showed me how to do this using look-up tables. 
+
+
+This drop-down menu uses the look-up table for Book Order to return the Order number of any of the Biblical books as they appear in the Hebrew Bible/Old Testament. The four gospels are added to the end along with all "ExtraBiblical" material.
+
+```{r, echo=FALSE}
+
+TanachBookOrderTable<-matrix(c(1:41), ncol=1, byrow=TRUE)
+colnames(TanachBookOrderTable)<-("Book Order")
+rownames(TanachBookOrderTable)<-c("Genesis","Exodus","Leviticus","Numbers","Deuteronomy","Joshua",
+                                  "Judges","Samuel","Kings","Isaiah","Jeremiah","Ezekiel","Hosea",
+                                  "Joel","Amos","Obadiah","Jonah","Micah","Nahum","Habakkuk",
+                                  "Zephaniah","Haggai","Zechariah","Malachi", "Psalms","Proverbs",
+                                  "Job", "SongofSongs","Ruth","Lamentations","Ecclesiastes","Esther",
+                                  "Daniel","Ezra","Nehemiah","Chronicles","Matthew","Mark","Luke","John",
+                                  "ExtraBiblical")
+TanachBookOrderTable<-as.table(TanachBookOrderTable)
+
+TanachSeferOrderTable <- as.data.frame(TanachBookOrderTable)
+
+TanachSeferOrderTable <- TanachSeferOrderTable[, c(1,3)]
+
+colnames(TanachSeferOrderTable) <- c("Book", "Book Order")
+
+library(shiny)
+library(knitr)
+TanachOrderTable <- function(Sefer) {
+  TanachSeferOrderTable <- TanachSeferOrderTable[TanachSeferOrderTable$Book==Sefer, ]
+  return(TanachSeferOrderTable)
+}
+
+selectInput("Seferr", "Which Book?", c("Genesis","Exodus","Leviticus","Numbers","Deuteronomy","Joshua",
+                                  "Judges","Samuel","Kings","Isaiah","Jeremiah","Ezekiel","Hosea",
+                                  "Joel","Amos","Obadiah","Jonah","Micah","Nahum","Habakkuk",
+                                  "Zephaniah","Haggai","Zechariah","Malachi", "Psalms","Proverbs",
+                                  "Job", "SongofSongs","Ruth","Lamentations","Ecclesiastes","Esther",
+                                  "Daniel","Ezra","Nehemiah","Chronicles","Matthew","Mark","Luke","John",
+                                  "ExtraBiblical"), multiple=FALSE)
+renderTable({TanachOrderTable(input$Seferr)
+  })
+```
+
+
+
+Now back to the Devarim data. The next chunk of code splits chapter and verse and assigns an extra column for Book Order.
+
+```{r, eval=FALSE}
+
+library(stringr)
+#separating chapter and verse into two separate columns by a colon delimiter
+dfDevarimCitedVerses<-cbind(dfDevarimCitedVerses, str_split_fixed(dfDevarimCitedVerses$X2, ':', 2))
+
+#deleting the now extraneous column with chapter and verse together
+dfDevarimCitedVerses <- dfDevarimCitedVerses[,-2]
+
+#Adding a new column for the Book Order of all the Cited Verses
+
+dfDevarimCitedVerses<-cbind(sapply(as.character(dfDevarimCitedVerses[,1]), FUN=function(a){TanachBookOrderTable[a,1]}), dfDevarimCitedVerses)
+
+booknum <- c()       
+for (i in 1:nrow(dfDevarimCitedVerses)) {
+  booknum<-c(booknum, TanachBookOrderTable[dfDevarimCitedVerses[i,1],1])
+}
+
+#Changing the column names of the dataframe
+
+colnames(dfDevarimCitedVerses)<-c("Book Order", "Book", "Chapter", "Verse")
+
+library(plyr)
+
+#Sorting the data frame by book order
+dfDevarimCitedVerses <- arrange(dfDevarimCitedVerses, `Book Order`)
+
+```
+
+
+
+Now it's time to add a column for the associated Parasha of each of the cited verses. I created a Parasha look-up table with the name of each Parasha, its Book, and its beginning and ending Verses. This drop-down menu displays that information for each Parasha:
+
+```{r, echo=FALSE}
+
+#Creating the look-up table
+ParashaTable<-matrix(c("Bereshit", "Genesis", 1, 1, 6, 8, "Noach", "Genesis", 6, 9, 11, 32, "Lech Lecha", "Genesis", 12, 1, 17, 27,
+                       "VaYera", "Genesis", 18, 1, 22, 24, "Hayyei Sarah", "Genesis", 23, 1, 25, 18, "Toldot", "Genesis", 25, 19, 28, 9,
+                       "VaYetze", "Genesis",  28, 10, 32, 3, "VaYishlach", "Genesis", 32, 4, 36, 43, "VaYeishev", "Genesis", 37, 1, 40, 23,  
+                       "Miketz", "Genesis", 41, 1, 44, 17, "VaYiggash", "Genesis", 44, 18, 47, 27, "VaYechi", "Genesis", 47, 28, 50, 26,
+                       "Shmot", "Exodus", 1, 1, 6, 1, "VaEra", "Exodus", 6, 2, 9, 35, "Bo", "Exodus", 10, 1, 13, 16, 
+                       "Beshallach", "Exodus", 13, 17, 17, 16, "Yitro", "Exodus", 18, 1, 20, 23, "Mishpatim", "Exodus", 21, 1, 24, 18, 
+                       "Terumah", "Exodus", 25, 1, 27, 19, "Tetzaveh", "Exodus", 27, 20, 30, 10, "Ki Tissa", "Exodus", 30, 11, 34, 35,
+                       "VaYakhel-Pekudei", "Exodus", 35, 1, 40, 38, "VaYikra", "Leviticus", 1, 1, 5, 26, "Tzav", "Leviticus", 6, 1, 8, 36,
+                       "Shemini", "Leviticus", 9, 1, 11, 47, "Tazria-Metzora", "Leviticus", 12, 1, 15, 33, "Aharei Mot-Kedoshim", "Leviticus", 16, 1, 20, 27, 
+                       "Emor", "Leviticus", 21, 1, 24, 23, "Behar-Behukkotai", "Leviticus", 25, 1, 27, 34, "BaMidbar", "Numbers", 1, 1, 4, 20, 
+                       "Naso" , "Numbers", 4, 21, 7, 89, "Behaalotcha", "Numbers", 8, 1, 12, 16, "Shlach Lecha" , "Numbers", 13, 1, 15, 41,
+                       "Korach", "Numbers", 16, 1, 18, 32, "Chukat-Balak", "Numbers", 19, 1, 25, 9, "Pinchas", "Numbers", 25, 10, 30, 1,
+                       "Mattot-Masei", "Numbers", 30, 2, 36, 13, "Devarim", "Deuteronomy", 1, 1, 3, 22, "Vaetchanan", "Deuteronomy", 3, 23, 7, 11,
+                       "Eikev", "Deuteronomy", 7, 12, 11, 25, "Reeh", "Deuteronomy", 11, 26, 16, 17, "Shoftim", "Deuteronomy", 16, 18, 21, 9,
+                       "Ki Teitze", "Deuteronomy", 21, 10, 25, 19, "Ki Tavo", "Deuteronomy", 26, 1, 29, 8, "Nitzavim-VaYeilech", "Deuteronomy", 29, 9, 31, 30,
+                       "Haazinu", "Deuteronomy", 32, 1, 32, 52, "Vzot HaBracha", "Deuteronomy", 33, 1, 34, 12), ncol=6, byrow=TRUE)
+
+#Changing the column names
+colnames(ParashaTable)<-c("Parasha", "Book", "Beginning Chapter", "Beginning Verse", "Closing Chapter", "Closing Verse")
+ParashaTable<-as.table(ParashaTable)
+
+#Turning into a dataframe
+ParashaTable<-as.data.frame.matrix(ParashaTable)
+
+#Writing a function to spit out the other information on the look-up table when fed a particular Parasha. 
+ParashaTableFunction <- function(Parrasha) {
+  ParashaTable1 <- ParashaTable[ParashaTable$Parasha==Parrasha, ]
+  ParashaTable1 <- ParashaTable1[,c(1:6)]
+  return(ParashaTable1)
+}
+
+#Using shiny package to create the drop-down menu
+library(shiny)
+selectInput("Parrasha", "Which Parasha?", c("Bereshit", "Noach", "Lech Lecha", 
+                       "VaYera", "Hayyei Sarah", "Toldot", 
+                       "VaYetze", "VaYishlach", "VaYeishev",  
+                       "Miketz", "VaYiggash", "VaYechi", 
+                       "Shmot", "VaEra", "Bo", 
+                       "Beshallach", "Yitro", "Mishpatim", 
+                       "Terumah", "Tetzaveh", "Ki Tissa", 
+                       "VaYakhel-Pekudei", "VaYikra", "Tzav", 
+                       "Shemini", "Tazria-Metzora", "Aharei Mot-Kedoshim", 
+                       "Emor",  "Behar-Behukkotai", "BaMidbar", 
+                       "Naso",  "Behaalotcha", "Shlach Lecha" , 
+                       "Korach", "Chukat-Balak", "Pinchas", 
+                       "Mattot-Masei", "Devarim", "Vaetchanan", 
+                       "Eikev", "Reeh", "Shoftim", 
+                       "Ki Teitze", "Ki Tavo", "Nitzavim-VaYeilech", 
+                       "Haazinu", "Vzot HaBracha"), multiple=FALSE)
+
+renderTable({
+  ParashaTableFunction(input$Parrasha)
+})
+```
+
+
+Here are a few functions to identify the Parasha based on Book, Chapter, and Verse information:
+
+```{r}
+
+#Building the function
+library(stringr)
+
+#First creating a function that will convert the information in the look-up table to just one number.
+
+ParashaTable$beginAbsolute <- paste(str_pad(ParashaTable$Book, 2, pad = "0"),
+                                    str_pad(ParashaTable$`Beginning Chapter`, 2, pad = "0"),
+                                    str_pad(ParashaTable$`Beginning Verse`, 2, pad = "0"), sep="")
+
+ParashaTable$closeAbsolute <- paste(str_pad(ParashaTable$Book, 2, pad = "0"),
+                                    str_pad(ParashaTable$`Closing Chapter`, 2, pad = "0"),
+                                    str_pad(ParashaTable$`Closing Verse`, 2, pad = "0"), sep="")
+
+convertVerseToAbsolute <- function(book, chapter, verse) {
+  tmp <- paste(str_pad(book,2, pad = "0"), 
+               str_pad(chapter,2, pad = "0"), 
+               str_pad(verse,2, pad = "0"),sep="")
+  return(tmp)
+}
+
+#Using that one number to determine the Parasha of any verse, given its Book, Chapter number, and Verse number
+
+getParasha <- function(book, chapter, verse) {
+  absNum <- convertVerseToAbsolute(book, chapter, verse)
+  parasha <- ParashaTable[which(ParashaTable$beginAbsolute <= absNum & 
+                                  ParashaTable$closeAbsolute >= absNum),"Parasha"]
+  return(as.character(parasha))
+}
+
+```
+
+
+You can test out the new getParasha function with a couple examples. Make sure to select one of the five books, followed by the chapter number, then the verse number.
+
+```{r, echo = FALSE}
+
+#Using shiny package to create interactive way to test out the function
+library(shiny)
+selectInput("Book", "Which Book?", c("Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy"), multiple=FALSE)
+numericInput("Chapter", "Which Chapter?", 1)
+numericInput("Verse", "Which Verse?", 1)
+
+
+renderText({
+  c("Parashat", getParasha(input$Book, input$Chapter, input$Verse))
+})
+```
+
+
+
+Now that the function is written it is possible to add a column to our Devarim data frame with the Parasha associated with each cited verse. 
+
+```{r, eval=FALSE}
+
+#Attaching a Parasha name to each cited verse.
+ParashaDevarim <- c()       
+for (i in 1:nrow(dfDevarimCitedVerses)) {
+  ParashaDevarim<-c(ParashaDevarim, getParasha(dfDevarimCitedVerses$Book[i], dfDevarimCitedVerses$Chapter[i], dfDevarimCitedVerses$Verse[i]))
+}
+
+
+#Adding those Parasha names to the data frame, but only to verses from the 5 books of the Torah. Any other books or ExtraBiblical sources do not have parashas associated with them.
+therows <- c(1:42)
+thecolumn <- "Parasha"
+values <- ParashaDevarim
+dfDevarimCitedVerses[therows, thecolumn] <- values
+```
+
+
+This process was repeated for the commentaries on all of the other 46 Parashiyot. The code is basically the same for each, just with different names of the Parashiyot and different word replacements. I renamed each data frame "mydataframe"" followed by a number representing the order of each Parasha. I saved them all as .csv files, re-read them into R, and combined them into one large dataframe. I did this process to save time loading the data.
+
+```{r, echo=TRUE, warning=FALSE, eval=FALSE}
+
+#Changing names of all the data frames and adding two new columns giving the name of the Commentary Parasha and the Commentary Book Order. 
+mydataframe1<-cbind(dfBereishitCitedVerses, "Bereshit", 1)
+mydataframe2<-cbind(dfNoachCitedVerses, "Noach", 1)
+mydataframe3<-cbind(dfLechLechaCitedVerses, "Lech Lecha", 1)
+mydataframe4<-cbind(dfVaYeraCitedVerses, "VaYera", 1)
+mydataframe5<-cbind(dfHayyeiSarahCitedVerses, "Hayyei Sarah", 1)
+mydataframe6<-cbind(dfToldotCitedVerses, "Toldot", 1)
+mydataframe7<-cbind(dfVaYetzeiCitedVerses, "VaYetze", 1)
+mydataframe8<-cbind(dfVaYishlahCitedVerses, "VaYishlach", 1)
+mydataframe9<-cbind(dfVaYeshevCitedVerses, "VaYeishev", 1)
+mydataframe10<-cbind(dfMiketzCitedVerses, "Miketz", 1)
+mydataframe11<-cbind(dfVaYiggashCitedVerses, "VaYiggash", 1)
+mydataframe12<-cbind(dfVaYehiCitedVerses, "VaYechi", 1)
+
+mydataframe13<-cbind(dfShemotCitedVerses, "Shmot", 2)
+mydataframe14<-cbind(dfVaEraCitedVerses, "VaEra", 2)
+mydataframe15<-cbind(dfBoCitedVerses, "Bo", 2)
+mydataframe16<-cbind(dfBeshallahCitedVerses, "Beshallach", 2)
+mydataframe17<-cbind(dfYitroCitedVerses, "Yitro", 2)
+mydataframe18<-cbind(dfMishpatimCitedVerses, "Mishpatim", 2)
+mydataframe19<-cbind(dfTerumahCitedVerses, "Terumah", 2)
+mydataframe20<-cbind(dftetzavehCitedVerses, "Tetzaveh", 2)
+mydataframe21<-cbind(dfKiTissaCitedVerses, "Ki Tissa", 2)
+mydataframe22<-cbind(dfVaYakhelPekudeiCitedVerses, "VaYakhel-Pekudei", 2)
+
+mydataframe23<-cbind(dfVaYikraCitedVerses, "VaYikra", 3)
+mydataframe24<-cbind(dfTzavCitedVerses, "Tzav", 3)
+mydataframe25<-cbind(dfSheminiCitedVerses, "Shemini", 3)
+mydataframe26<-cbind(dfTazriaMetzoraCitedVerses, "Tazria-Metzora", 3)
+mydataframe27<-cbind(dfAhareiMotKedoshimCitedVerses, "Aharei Mot-Kedoshim", 3)
+mydataframe28<-cbind(dfEmorCitedVerses, "Emor", 3)
+mydataframe29<-cbind(dfBeharBehukkotaiCitedVerses, "Behar-Behukkotai", 3)
+
+mydataframe30<-cbind(dfBaMidbarCitedVerses, "BaMidbar", 4)
+mydataframe31<-cbind(dfNasoCitedVerses, "Naso", 4)
+mydataframe32<-cbind(dfBehaalotchaCitedVerses, "Behaalotcha", 4)
+mydataframe33<-cbind(dfShlachLechaCitedVerses, "Shlach Lecha", 4)
+mydataframe34<-cbind(dfKorahCitedVerses, "Korach", 4)
+mydataframe35<-cbind(dfChukatBalakCitedVerses, "Chukat-Balak", 4)
+mydataframe36<-cbind(dfPinchasCitedVerses, "Pinchas", 4)
+mydataframe37<-cbind(dfMattotMaseiCitedVerses, "Mattot-Masei", 4)
+
+mydataframe38<-cbind(dfDevarimCitedVerses, "Devarim", 5)
+mydataframe39<-cbind(dfVaetchananCitedVerses, "Vaetchanan", 5)
+mydataframe40<-cbind(dfEikevCitedVerses, "Eikev", 5)
+mydataframe41<-cbind(dfReehCitedVerses, "Reeh", 5)
+mydataframe42<-cbind(dfShoftimCitedVerses, "Shoftim", 5)
+mydataframe43<-cbind(dfKiTetzeCitedVerses, "Ki Teitze", 5)
+mydataframe44<-cbind(dfKiTavoCitedVerses, "Ki Tavo", 5)
+mydataframe45<-cbind(dfNitzavimVaYelechCitedVerses, "Nitzavim-VaYeilech", 5)
+mydataframe46<-cbind(dfHaazinuCitedVerses, "Haazinu", 5)
+mydataframe47<-cbind(dfVzotHabrachaCitedVerses, "Vzot HaBracha", 5)
+
+
+#Changing the names of the columns for each dataframe so they're all the same and can be easily combined later. 
+
+df.list <- lapply(1:47, function(i) get(paste0("mydataframe", i)))
+
+df.list  <- 
+  lapply(df.list, function(x) {colnames(x) <- c("CitedBookOrder", "Book", "Chapter", "Verse", 
+                                                "CitedParasha", "CommentaryParasha", "CommentaryBookOrder");   x})
+
+#Saving all the dataframes as a .csv file
+
+for (i in 1:47) {write.csv(df.list[[i]], paste0("mydataframe", i, ".csv"))}
+
+```
+
+
+All of the different data frames for cited verses from each parasha's commentaries will be combined into one to make the analysis easier:
+
+```{r, warning=FALSE}
+
+#Loading all the .csv files into R. Making sure to set stringsasFactors as false to make combining the data easier. 
+df.list <- lapply(1:47, function(i) read.csv(paste0("C:\\Users\\Daniel\\Documents\\NYU\\Spring 2016\\Big Data\\VaYikra Test Project\\", "mydataframe", i, ".csv", sep=""), sep=",", stringsAsFactors = FALSE))
+
+#Getting rid of an extra column for each dataframe. 
+df.list <- lapply(1:47, function(i) df.list[[i]][ ,-c(1)])
+
+#Combining all of the data for each of the 47 Parashas into one big dataframe. 
+mydataframe <- do.call("rbind", df.list)
+
+#Counting the number of cited verses in the dataset
+countingdataframe <- as.data.frame(nrow(mydataframe))
+
+colnames(countingdataframe) <- "Number of Cited Verses in the dataset"
+
+countingdataframe
+```
+
+
+As you can see above there are 4313 different cited verses in the dataset. Let's take a closer look at them!
+
+
+Now that the data is combined, the first thing to do is to see which verses are cited most frequently by the commentaries of each Parasha. Knowing this information can give us a sense of what the most 'popular' verses are in each of the Torah portions, at least according to the authors of these JTS commentaries. 
+
+
+The following interactive tool allows for choosing a Parasha and the number of top verses cited from the commentaries on that Parasha (5 for top 5, 10 for top 10, etc.):
+
+```{r, echo=FALSE}
+
+ParashaTable2<-matrix(c("Bereshit", 1, "Noach", 2, "Lech Lecha", 3,  
+                       "VaYera", 4, "Hayyei Sarah", 5, "Toldot", 6,
+                       "VaYetze", 7, "VaYishlach", 8, "VaYeishev", 9, 
+                       "Miketz", 10, "VaYiggash", 11, "VaYechi", 12,
+                       "Shmot", 13, "VaEra", 14, "Bo", 15,
+                       "Beshallach", 16, "Yitro", 17, "Mishpatim", 18,
+                       "Terumah", 19, "Tetzaveh", 20, "Ki Tissa", 21,
+                       "VaYakhel-Pekudei", 22, "VaYikra", 23, "Tzav", 24, 
+                       "Shemini", 25, "Tazria-Metzora", 26, "Aharei Mot-Kedoshim", 27,
+                       "Emor", 28, "Behar-Behukkotai", 29, "BaMidbar", 30,
+                       "Naso", 31, "Behaalotcha", 32, "Shlach Lecha" , 33,
+                       "Korach", 34, "Chukat-Balak", 35, "Pinchas", 36,
+                       "Mattot-Masei", 37, "Devarim", 38, "Vaetchanan", 39,
+                       "Eikev", 40, "Reeh", 41, "Shoftim", 42,
+                       "Ki Teitze", 43, "Ki Tavo", 44, "Nitzavim-VaYeilech", 45,
+                       "Haazinu", 46, "Vzot HaBracha", 47), ncol=2, byrow=TRUE)
+
+ParashaTable2 <- as.data.frame.matrix(ParashaTable2)
+
+colnames(ParashaTable2) <- c("Parasha", "ParshaOrder")
+
+
+toNumber <- function(Parsha) {
+  test <- ParashaTable2[ParashaTable2$Parasha==Parsha, ]
+  number <- test[,c(2)]
+  number <- as.numeric(noquote(as.character(number)))
+  return(number)
+}
+
+PopularVerses <- function(Parsha, Kamah) {
+
+qualities <-c ("Book", "Chapter", "Verse")
+df.listpopularverses <- 
+  lapply(df.list, function(x) {x <- head(arrange(ddply(x, qualities, nrow), -V1, Book),  Kamah)[1:4]})
+
+df.listpopularverses <- 
+  lapply(df.listpopularverses, function(x) {as.data.frame(x)})
+
+
+  
+
+colnames(df.listpopularverses[[toNumber(Parsha)]]) <- c("Book", "Chapter", "Verse", "Frequency")
+
+return(df.listpopularverses[[toNumber(Parsha)]])
+
+}
+
+library(shiny)
+selectInput("Parasha", "Which Parasha?", c("Bereshit", "Noach", "Lech Lecha", 
+                       "VaYera", "Hayyei Sarah", "Toldot", 
+                       "VaYetze", "VaYishlach", "VaYeishev",  
+                       "Miketz", "VaYiggash", "VaYechi", 
+                       "Shmot", "VaEra", "Bo", 
+                       "Beshallach", "Yitro", "Mishpatim", 
+                       "Terumah", "Tetzaveh", "Ki Tissa", 
+                       "VaYakhel-Pekudei", "VaYikra", "Tzav", 
+                       "Shemini", "Tazria-Metzora", "Aharei Mot-Kedoshim", 
+                       "Emor",  "Behar-Behukkotai", "BaMidbar", 
+                       "Naso",  "Behaalotcha", "Shlach Lecha" , 
+                       "Korach", "Chukat-Balak", "Pinchas", 
+                       "Mattot-Masei", "Devarim", "Vaetchanan", 
+                       "Eikev", "Reeh", "Shoftim", 
+                       "Ki Teitze", "Ki Tavo", "Nitzavim-VaYeilech", 
+                       "Haazinu", "Vzot HaBracha"), multiple=FALSE)
+
+numericInput("Verses", "How many verses?", 10)
+
+
+
+renderTable ({
+          PopularVerses(input$Parasha, input$Verses)
+  }) 
+```
+
+Let's use Parashat Bereishit as an example. The most popular verse to cite is Genesis 1:1, which is the beginning of the Creation story. The second most popular verse to cite is Genesis 1:28, in which God commands Adam and Eve to "be fruitful and multiply". Checking out the top cited verses from each Parasha is a way to describe the popularity of various Biblical verses in the Jewish tradition.
+
+The next drop-down tool allows you to see the most popular Parasha cited by each Parasha's commentaries.
+```{r, echo=FALSE}
+PopularParashas <- function(Prsha, Kamah) {
+
+qualities <-c ("CitedParasha", "Book")
+
+df.listpopularparashas <-
+  lapply(1:47, function(x) {x <- df.list[[x]][complete.cases(df.list[[x]]), ]})
+
+df.listpopularparashas <- 
+  lapply(df.listpopularparashas, function(x) {x <- head(arrange(ddply(x, c("CitedParasha", "Book"), nrow), -V1), Kamah)})
+
+df.listpopularparashas <- 
+  lapply(df.listpopularparashas, function(x) {as.data.frame(x)})
+
+
+  
+
+colnames(df.listpopularparashas[[toNumber(Prsha)]]) <- c("Parasha", "Book", "Frequency")
+
+return(df.listpopularparashas[[toNumber(Prsha)]])
+
+}
+
+library(shiny)
+selectInput("Parash", "Which Parasha?", c("Bereshit", "Noach", "Lech Lecha", 
+                       "VaYera", "Hayyei Sarah", "Toldot", 
+                       "VaYetze", "VaYishlach", "VaYeishev",  
+                       "Miketz", "VaYiggash", "VaYechi", 
+                       "Shmot", "VaEra", "Bo", 
+                       "Beshallach", "Yitro", "Mishpatim", 
+                       "Terumah", "Tetzaveh", "Ki Tissa", 
+                       "VaYakhel-Pekudei", "VaYikra", "Tzav", 
+                       "Shemini", "Tazria-Metzora", "Aharei Mot-Kedoshim", 
+                       "Emor",  "Behar-Behukkotai", "BaMidbar", 
+                       "Naso",  "Behaalotcha", "Shlach Lecha" , 
+                       "Korach", "Chukat-Balak", "Pinchas", 
+                       "Mattot-Masei", "Devarim", "Vaetchanan", 
+                       "Eikev", "Reeh", "Shoftim", 
+                       "Ki Teitze", "Ki Tavo", "Nitzavim-VaYeilech", 
+                       "Haazinu", "Vzot HaBracha"), multiple=FALSE)
+
+numericInput("Verss", "How many parashas?", 5)
+
+
+
+renderTable ({
+          PopularParashas(input$Parash, input$Verss)
+  }) 
+```
+Unsurprisingly the most popular Parasha for each commentary to cite is its own. The tool also allows seeing the connections between various Parashas throughout the Torah. 
+
+
+The next drop-down menu also reveals connections between various Parashas. When fed the name of a Parasha it displays the names of the Parashas whose commentaries cite it the most frequently.
+```{r, echo=FALSE}
+
+tempdataframe <- mydataframe[,-c(1, 2, 3, 4, 7)]
+tempdataframe <- tempdataframe[,c(2,1)]
+tempdataframe <- tempdataframe[complete.cases(tempdataframe),]
+
+for (i in c("Bereshit", "Noach", "Lech Lecha", 
+                       "VaYera", "Hayyei Sarah", "Toldot", 
+                       "VaYetze", "VaYishlach", "VaYeishev",  
+                       "Miketz", "VaYiggash", "VaYechi", 
+                       "Shmot", "VaEra", "Bo", 
+                       "Beshallach", "Yitro", "Mishpatim", 
+                       "Terumah", "Tetzaveh", "Ki Tissa", 
+                       "VaYakhel-Pekudei", "VaYikra", "Tzav", 
+                       "Shemini", "Tazria-Metzora", "Aharei Mot-Kedoshim", 
+                       "Emor",  "Behar-Behukkotai", "BaMidbar", 
+                       "Naso",  "Behaalotcha", "Shlach Lecha" , 
+                       "Korach", "Chukat-Balak", "Pinchas", 
+                       "Mattot-Masei", "Devarim", "Vaetchanan", 
+                       "Eikev", "Reeh", "Shoftim", 
+                       "Ki Teitze", "Ki Tavo", "Nitzavim-VaYeilech", 
+                       "Haazinu", "Vzot HaBracha")) {
+  assign(paste0("cooldataframe", toNumber(i)), tempdataframe[tempdataframe$CitedParasha==i, ]
+  )}
+
+df.list1 <- lapply(1:47, function(i) get(paste0("cooldataframe", i)))
+
+
+PopularParashas2 <- function(Parsha, Kamah) {
+
+qualities <-c ("CommentaryParasha", "Book")
+df.listpopularparashas2 <- 
+  lapply(df.list1, function(x) {x <- head(arrange(ddply(x, c("CommentaryParasha"), nrow), -V1), Kamah)})
+
+df.listpopularparashas <- 
+  lapply(df.listpopularparashas2, function(x) {as.data.frame(x)})
+
+
+  
+
+colnames(df.listpopularparashas2[[toNumber(Parsha)]]) <- c("Parasha", "Frequency")
+
+return(df.listpopularparashas2[[toNumber(Parsha)]])
+
+}
+
+library(shiny)
+selectInput("Parsh", "Which Parasha?", c("Bereshit", "Noach", "Lech Lecha", 
+                       "VaYera", "Hayyei Sarah", "Toldot", 
+                       "VaYetze", "VaYishlach", "VaYeishev",  
+                       "Miketz", "VaYiggash", "VaYechi", 
+                       "Shmot", "VaEra", "Bo", 
+                       "Beshallach", "Yitro", "Mishpatim", 
+                       "Terumah", "Tetzaveh", "Ki Tissa", 
+                       "VaYakhel-Pekudei", "VaYikra", "Tzav", 
+                       "Shemini", "Tazria-Metzora", "Aharei Mot-Kedoshim", 
+                       "Emor",  "Behar-Behukkotai", "BaMidbar", 
+                       "Naso",  "Behaalotcha", "Shlach Lecha" , 
+                       "Korach", "Chukat-Balak", "Pinchas", 
+                       "Mattot-Masei", "Devarim", "Vaetchanan", 
+                       "Eikev", "Reeh", "Shoftim", 
+                       "Ki Teitze", "Ki Tavo", "Nitzavim-VaYeilech", 
+                       "Haazinu", "Vzot HaBracha"), multiple=FALSE)
+
+numericInput("Vers", "How many parashas?", 5)
+
+
+
+renderTable ({
+          PopularParashas2(input$Parsh, input$Vers)
+  }) 
+
+```
+
+
+
+
+The next part of the analysis shows the connections between the various parashiyot of the Torah in a more visual way. Below are seven network graphs. The first two show all 47 of the Parashas as nodes in a circle. They are color-coded by book (Genesis gold, Exodus blue, Leviticus red, Numbers purple, and Deuteronomy green) and go in order, starting with Parashat Bereshit on the right and moving counter-clockwise around the circle. 
+
+In the first graph, lines point out from each Parasha to all the other Parashas it cites. The size of the node corresponds to the number of times commentaries on other Parashas cite verses from that node's Parasha. Self-citations are not included.
+
+Here is the first graph:
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+#Using igraph library
+library(igraph)
+
+mydataframe <- do.call("rbind", df.list)
+
+#Only using the CommentaryParasha and CitedParasha columns
+graphdataframe<-mydataframe[,-c(1, 2, 3, 4, 7)]
+graphdataframe<-graphdataframe[,c(2,1)]
+graphdataframe<-graphdataframe[complete.cases(graphdataframe),]
+
+
+#Assigning the colors for each book
+colrs<-c("gold", "gold", "gold", "gold", "gold", "gold",
+         "gold", "gold", "gold", "gold", "gold", "gold", 
+         "mediumblue", "mediumblue", "mediumblue", "mediumblue", "mediumblue", 
+         "mediumblue", "mediumblue", "mediumblue", "mediumblue", "mediumblue",
+         "red", "red", "red", "red", "red", "red", "red", 
+         "darkviolet", "darkviolet", "darkviolet", "darkviolet", "darkviolet", 
+         "darkviolet", "darkviolet", "darkviolet", "forestgreen", "forestgreen", 
+         "forestgreen", "forestgreen", "forestgreen", "forestgreen", "forestgreen", 
+         "forestgreen", "forestgreen", "forestgreen")
+
+#Greating a graph object
+net.bg<-graph.data.frame(graphdataframe)
+
+#Removing loops to avoid self-citations
+net.bg <- simplify(net.bg, remove.multiple = F, remove.loops = T) 
+
+
+#Setting the colors
+V(net.bg)$color <- colrs[V(net.bg)]
+
+#Setting the size
+deg <- degree(net.bg, mode="in")
+V(net.bg)$size <- 1.5*sqrt(deg)
+
+#Setting the layout as a circle      
+l <- layout.circle(net.bg)
+
+
+#Plotting the graph
+plot(net.bg, layout=l, edge.width=0.01, edge.arrow.size=.05, 
+     vertex.label.cex=0.75, vertex.label="")
+
+
+
+## Apply labels manually
+#Specify x and y coordinates of labels, adjust outward as desired
+x = l[,1]*1.3
+y = l[,2]*1.3
+
+#create vector of angles for text based on number of nodes 
+# (flipping the orientation of the words half way around so none appear 
+# upside down)
+angle = ifelse(atan(-(l[,1]/l[,2]))*(180/pi) < 0,  
+               90 + atan(- (l[,1]/l[,2]))*(180/pi), 270 + atan(-l[,1]/l[,2])*(180/pi))
+
+#Apply the text labels with a loop with angle as srt
+for (i in 1:length(x)) {
+  text(x=x[i], y=y[i], labels=V(net.bg)$name[i], adj=NULL, 
+       pos=NULL, cex=.7, col="black", srt=angle[i], xpd=T, font=2)
+}
+```
+
+As you can see from the graph, Bereshit is the largest node by far, followed by Shemot. 
+
+
+
+The second graph only shows citations of verses outside of commentaries' own books, also with nodes resized to represent frequency of times verses from a node (parasha) is cited. Getting rid of citations from the same books demonstrates how interconnected more disparate parts of the Torah are to each other, as measured by how frequently commentaries cite verses outside of the Book which they primarily discuss.
+
+```{r, echo=FALSE, warning=FALSE}
+
+library(igraph)
+
+mydataframegraph2 <- mydataframe[!(mydataframe$CitedBookOrder==mydataframe$CommentaryBookOrder),]
+mydataframegraph2 <- mydataframegraph2 <- mydataframegraph2[complete.cases(mydataframegraph2),]
+
+
+graphdataframe2 <- mydataframegraph2[,-c(1, 2, 3, 4, 7)]
+graphdataframe2 <- graphdataframe2[,c(2,1)]
+
+
+
+colrs<-c("gold", "gold", "gold", "gold", "gold", "gold",
+         "gold", "gold", "gold", "gold", "gold", "gold", 
+         "mediumblue", "mediumblue", "mediumblue", "mediumblue", "mediumblue", 
+         "mediumblue", "mediumblue", "mediumblue", "mediumblue", "mediumblue",
+         "red", "red", "red", "red", "red", "red", "red", 
+         "darkviolet", "darkviolet", "darkviolet", "darkviolet", "darkviolet", 
+         "darkviolet", "darkviolet", "darkviolet", "forestgreen", "forestgreen", 
+         "forestgreen", "forestgreen", "forestgreen", "forestgreen", "forestgreen", 
+         "forestgreen", "forestgreen", "forestgreen")
+
+
+net.bg1 <- graph.data.frame(graphdataframe2)
+net.bg1 <- simplify(net.bg1, remove.multiple = F, remove.loops = T) 
+
+
+
+V(net.bg1)$color <- colrs[V(net.bg1)]
+
+deg <- degree(net.bg1, mode="in")
+V(net.bg1)$size <- 1.5*sqrt(deg)
+
+
+l <- layout.circle(net.bg1)
+
+
+
+plot(net.bg1, layout=l, edge.width=0.01, edge.arrow.size=.05, 
+     vertex.label.cex=0.75, vertex.label="")
+
+
+
+## Apply labels manually
+#Specify x and y coordinates of labels, adjust outward as desired
+x = l[,1]*1.3
+y = l[,2]*1.3
+
+#create vector of angles for text based on number of nodes 
+# (flipping the orientation of the words half way around so none appear 
+# upside down)
+angle = ifelse(atan(-(l[,1]/l[,2]))*(180/pi) < 0,  
+               90 + atan(- (l[,1]/l[,2]))*(180/pi), 270 + atan(-l[,1]/l[,2])*(180/pi))
+
+#Apply the text labels with a loop with angle as srt
+for (i in 1:length(x)) {
+  text(x=x[i], y=y[i], labels=V(net.bg1)$name[i], adj=NULL, 
+       pos=NULL, cex=.7, col="black", srt=angle[i], xpd=T, font=2)
+}
+```
+
+Bereshit still appears to be the largest node, but it's interesting to note that the sizes of other Genesis parashas are smaller, indicating strong connectedness within the Parashas of Genesis. 
+
+The lines in both of these graphs are very dense, suggesting interconnectedness across the Torah. They are certainly striking images, but it's hard to do any meaningful interpretation from them. 
+
+More meaningful information can be seen in graphs of how the commentaries on Parashas of individual books are connected. The same sizing based on number of citations is used for each.
+
+First up is Genesis:
+
+```{r, echo=FALSE, warning=FALSE}
+
+#Subsetting the dataframe five times, to only include the parashas from each Book and only the verses they cite from that Book.
+Genesisdataframe<-mydataframe[(mydataframe$CitedBookOrder==1),]
+Genesisdataframe<-Genesisdataframe[(Genesisdataframe$CommentaryBookOrder==1),]
+
+Exodusdataframe<-mydataframe[(mydataframe$CitedBookOrder==2),]
+Exodusdataframe<-Exodusdataframe[(Exodusdataframe$CommentaryBookOrder==2),]
+
+Leviticusdataframe<-mydataframe[(mydataframe$CitedBookOrder==3),]
+Leviticusdataframe<-Leviticusdataframe[(Leviticusdataframe$CommentaryBookOrder==3),]
+
+Numbersdataframe<-mydataframe[(mydataframe$CitedBookOrder==4),]
+Numbersdataframe<-Numbersdataframe[(Numbersdataframe$CommentaryBookOrder==4),]
+
+Deuteronomydataframe<-mydataframe[(mydataframe$CitedBookOrder==5),]
+Deuteronomydataframe<-Deuteronomydataframe[(Deuteronomydataframe$CommentaryBookOrder==5),]
+
+#Only using necessary columns
+Genesisgraphdataframe<-Genesisdataframe[,-c(1, 2, 3, 4, 7)]
+Genesisgraphdataframe<-Genesisgraphdataframe[,c(2,1)]
+
+#Repeating the plotting process from before.
+net.bgGenesis<-graph.data.frame(Genesisgraphdataframe)
+net.bgGenesis<-simplify(net.bgGenesis, remove.multiple = F, remove.loops = T)
+
+degGenesis <- degree(net.bgGenesis, mode="in")
+V(net.bgGenesis)$size <- 3* sqrt(degGenesis)
+
+lGenesis<-layout.circle(net.bgGenesis)
+plot(net.bgGenesis, layout=lGenesis, edge.width=0.01, vertex.color="gold", edge.arrow.size=0.05, vertex.label.cex=0.75, vertex.label="")
+
+## Apply labels manually
+#Specify x and y coordinates of labels, adjust outward as desired
+x = lGenesis[,1]*1.3
+y = lGenesis[,2]*1.3
+
+#create vector of angles for text based on number of nodes 
+# (flipping the orientation of the words half way around so none appear 
+# upside down)
+angle = ifelse(atan(-(lGenesis[,1]/lGenesis[,2]))*(180/pi) < 0,  
+               90 + atan(- (lGenesis[,1]/lGenesis[,2]))*(180/pi), 270 + atan(-lGenesis[,1]/lGenesis[,2])*(180/pi))
+
+#Apply the text labels with a loop with angle as srt
+for (i in 1:length(x)) {
+  text(x=x[i], y=y[i], labels=V(net.bgGenesis)$name[i], adj=NULL, 
+       pos=NULL, cex=.7, col="black", srt=angle[i], xpd=T, font=2)
+}
+
+
+
+```
+
+You can see that Bereshit and Noach are tightly connected. The Abraham stories in Lech Lecha, VaYera, and Hayyei Sarah are also tightly connected. So too are the Jacob stories in Toldot, VaYetze, and VaYishlah. The Joseph stories near the end of Genesis are less tightly interconnected with one another.
+
+
+Now for Exodus: 
+
+```{r, echo=FALSE}
+
+Exodusgraphdataframe<-Exodusdataframe[,-c(1, 2, 3, 4, 7)]
+Exodusgraphdataframe<-Exodusgraphdataframe[,c(2,1)]
+
+net.bgExodus<-graph.data.frame(Exodusgraphdataframe)
+net.bgExodus<-simplify(net.bgExodus, remove.multiple = F, remove.loops = T)
+
+degExodus <- degree(net.bgExodus, mode="in")
+V(net.bgExodus)$size <- 3* sqrt(degExodus)
+
+lExodus<-layout.circle(net.bgExodus)
+plot(net.bgExodus, layout=lExodus, edge.width=0.01, vertex.color="medium blue", edge.arrow.size=0.05, vertex.label.cex=0.75, vertex.label="")
+
+## Apply labels manually
+#Specify x and y coordinates of labels, adjust outward as desired
+x = lExodus[,1]*1.3
+y = lExodus[,2]*1.3
+
+#create vector of angles for text based on number of nodes 
+# (flipping the orientation of the words half way around so none appear 
+# upside down)
+angle = ifelse(atan(-(lExodus[,1]/lExodus[,2]))*(180/pi) < 0,  
+               90 + atan(- (lExodus[,1]/lExodus[,2]))*(180/pi), 270 + atan(-lExodus[,1]/lExodus[,2])*(180/pi))
+
+#Apply the text labels with a loop with angle as srt
+for (i in 1:length(x)) {
+  text(x=x[i], y=y[i], labels=V(net.bgExodus)$name[i], adj=NULL, 
+       pos=NULL, cex=.7, col="black", srt=angle[i], xpd=T, font=2)
+}
+
+```
+
+The first four parashiyot of Exodus are very tightly connected. This finding is not surprising because these parashiyot are about the Exodus from Egypt. Yitro and Mishpatim, about many of the Laws, are also tightly connected. The other tightly interconnected parts of Exodus are the parashiyot about the construction of the Tabernacle near the end of the book (Terumah, Tetzaveh, and VaYakhel Pekudei). Parashat Ki Tissa, about the Golden Calf, connects back to a number of the narratives earlier in the Book, including to Parashat Yitro (which gives the prohibition on idolatry) and the Parashiyot of the Exodus narrative.
+
+
+Now for the Leviticus, Numbers, and Deuteronomy graphs, which are a little less interesting: 
+
+```{r, echo=FALSE}
+
+Leviticusgraphdataframe<-Leviticusdataframe[,-c(1, 2, 3, 4, 7)]
+Leviticusgraphdataframe<-Leviticusgraphdataframe[,c(2,1)]
+
+net.bgLeviticus<-graph.data.frame(Leviticusgraphdataframe)
+net.bgLeviticus<-simplify(net.bgLeviticus, remove.multiple = F, remove.loops = T)
+
+degLeviticus <- degree(net.bgLeviticus, mode="in")
+V(net.bgLeviticus)$size <- 3* sqrt(degLeviticus)
+
+lLeviticus<-layout.circle(net.bgLeviticus)
+plot(net.bgLeviticus, layout=lLeviticus, edge.width=0.1, vertex.color="red", edge.arrow.size=0.05, vertex.label.cex=0.75, vertex.label="")
+
+## Apply labels manually
+#Specify x and y coordinates of labels, adjust outward as desired
+x = lLeviticus[,1]*1.3
+y = lLeviticus[,2]*1.3
+
+#create vector of angles for text based on number of nodes 
+# (flipping the orientation of the words half way around so none appear 
+# upside down)
+angle = ifelse(atan(-(lLeviticus[,1]/lLeviticus[,2]))*(180/pi) < 0,  
+               90 + atan(- (lLeviticus[,1]/lLeviticus[,2]))*(180/pi), 270 + atan(-lLeviticus[,1]/lLeviticus[,2])*(180/pi))
+
+#Apply the text labels with a loop with angle as srt
+for (i in 1:length(x)) {
+  text(x=x[i], y=y[i], labels=V(net.bgLeviticus)$name[i], adj=NULL, 
+       pos=NULL, cex=.7, col="black", srt=angle[i], xpd=T, font=2)
+}
+
+
+Numbersgraphdataframe<-Numbersdataframe[,-c(1, 2, 3, 4, 7)]
+Numbersgraphdataframe<-Numbersgraphdataframe[,c(2,1)]
+
+net.bgNumbers<-graph.data.frame(Numbersgraphdataframe)
+net.bgNumbers<-simplify(net.bgNumbers, remove.multiple = F, remove.loops = T)
+
+degNumbers <- degree(net.bgNumbers, mode="in")
+V(net.bgNumbers)$size <- 3* sqrt(degNumbers)
+
+lNumbers<-layout.circle(net.bgNumbers)
+plot(net.bgNumbers, layout=lNumbers, edge.width=0.01, vertex.color="dark violet", edge.arrow.size=0.05, vertex.label.cex=0.75, vertex.label="")
+
+## Apply labels manually
+#Specify x and y coordinates of labels, adjust outward as desired
+x = lNumbers[,1]*1.3
+y = lNumbers[,2]*1.3
+
+#create vector of angles for text based on number of nodes 
+# (flipping the orientation of the words half way around so none appear 
+# upside down)
+angle = ifelse(atan(-(lNumbers[,1]/lNumbers[,2]))*(180/pi) < 0,  
+               90 + atan(- (lNumbers[,1]/lNumbers[,2]))*(180/pi), 270 + atan(-lNumbers[,1]/lNumbers[,2])*(180/pi))
+
+#Apply the text labels with a loop with angle as srt
+for (i in 1:length(x)) {
+  text(x=x[i], y=y[i], labels=V(net.bgNumbers)$name[i], adj=NULL, 
+       pos=NULL, cex=.7, col="black", srt=angle[i], xpd=T, font=2)
+}
+
+
+Deuteronomygraphdataframe<-Deuteronomydataframe[,-c(1, 2, 3, 4, 7)]
+Deuteronomygraphdataframe<-Deuteronomygraphdataframe[,c(2,1)]
+
+net.bgDeuteronomy<-graph.data.frame(Deuteronomygraphdataframe)
+net.bgDeuteronomy<-simplify(net.bgDeuteronomy, remove.multiple = F, remove.loops = T)
+
+degDeuteronomy <- degree(net.bgDeuteronomy, mode="in")
+V(net.bgDeuteronomy)$size <- 3* sqrt(degDeuteronomy)
+
+lDeuteronomy<-layout.circle(net.bgDeuteronomy)
+plot(net.bgDeuteronomy, layout=lExodus, edge.width=0.01, vertex.color="forest green", edge.arrow.size=0.05, vertex.label.cex=0.75, vertex.label="")
+
+## Apply labels manually
+#Specify x and y coordinates of labels, adjust outward as desired
+x = lDeuteronomy[,1]*1.3
+y = lDeuteronomy[,2]*1.3
+
+#create vector of angles for text based on number of nodes 
+# (flipping the orientation of the words half way around so none appear 
+# upside down)
+angle = ifelse(atan(-(lDeuteronomy[,1]/lDeuteronomy[,2]))*(180/pi) < 0,  
+               90 + atan(- (lDeuteronomy[,1]/lDeuteronomy[,2]))*(180/pi), 270 + atan(-lDeuteronomy[,1]/lDeuteronomy[,2])*(180/pi))
+
+#Apply the text labels with a loop with angle as srt
+for (i in 1:length(x)) {
+  text(x=x[i], y=y[i], labels=V(net.bgDeuteronomy)$name[i], adj=NULL, 
+       pos=NULL, cex=.7, col="black", srt=angle[i], xpd=T, font=2)
+}
+```
+
+
+
+
+The next set of drop-down menus allow you to see the most popular Verse, Chapter, Parasha, or Book cited by the commentaries on the entire Torah or by the commentaries on any of the 5 Books. You should also select if you want Verses cited by commentaries from different Parashas than the commentaries' own or from different Books than the commentaries' own. 
+
+Using this tool can give you a sense of the most popular verses, chapters, parashas, and books from commentaries on various parts of the Torah. 
+```{r, echo=FALSE, warning=FALSE}
+
+library(plyr)
+
+CreateTable <- function(Different, Popular, Source, Verses) {
+  ifelse(Different == "Parasha", 
+         mydataframediff <- mydataframe[!(mydataframe$CitedParasha==mydataframe$CommentaryParasha),],
+         mydataframediff <- mydataframe[!(mydataframe$CitedBookOrder==mydataframe$CommentaryBookOrder),])
+         
+  mydataframediff<-mydataframediff[complete.cases(mydataframediff),]
+
+  if(Source=="The Torah") {
+    mydataframediff <- mydataframediff
+  } else {
+    if(Source=="Genesis") {
+      mydataframediff <- mydataframediff[(mydataframediff$CommentaryBookOrder==1),]
+    } else {
+      if(Source=="Exodus") {
+        mydataframediff <- mydataframediff[(mydataframediff$CommentaryBookOrder==2),]
+      } else {
+        if(Source=="Leviticus") {
+          mydataframediff <- mydataframediff[(mydataframediff$CommentaryBookOrder==3),]
+        } else {
+          if(Source=="Numbers") {
+            mydataframediff <- mydataframediff[(mydataframediff$CommentaryBookOrder==4),]
+          } else {
+            if(Source=="Deuteronomy") {
+              mydataframediff <- mydataframediff[(mydataframediff$CommentaryBookOrder==5),]
+            }
+          }
+        }
+        }
+      }
+    }
+
+  
+  
+  if(Popular=="Verse") {
+    qualities <- c("CitedParasha", "Book", "Chapter", "Verse")
+    frequencydiff <- ddply(mydataframediff, qualities, nrow)
+    diffdataframe <- arrange(frequencydiff, -V1)
+  } else {
+    if(Popular=="Chapter") {
+      qualities <- c("CitedParasha", "Book", "Chapter")
+      frequencydiff <- ddply(mydataframediff, qualities, nrow)
+      diffdataframe <- arrange(frequencydiff, -V1)
+    } else {
+      if(Popular=="Parasha") {
+        qualities <- c("CitedParasha", "Book")
+        frequencydiff <- ddply(mydataframediff, qualities, nrow)
+        diffdataframe <- arrange(frequencydiff, -V1)  
+      } else {
+        if(Popular=="Book") {
+          qualities <- c("Book")
+          frequencydiff <- ddply(mydataframediff, qualities, nrow)
+          diffdataframe <- arrange(frequencydiff, -V1)
+        }
+      }
+    }
+  }
+
+  ifelse(Popular=="Book", diffdataframe <- diffdataframe, 
+         diffdataframe <- head(diffdataframe, Verses))
+  
+  if(Popular=="Parasha") {
+    diffdataframe <- diffdataframe[, c(2, 1, 3)]
+    colnames(diffdataframe) <- c("Book", "Parasha", "Frequency")
+  } else {
+    if(Popular=="Chapter") {
+      diffdataframe <- diffdataframe[, c(2, 3, 4)]
+      colnames(diffdataframe) <- c("Book", "Chapter", "Frequency")
+    } else {
+      if(Popular=="Verse") {
+        diffdataframe <- diffdataframe[, c(2, 1, 3, 4, 5)]
+        colnames(diffdataframe) <- c("Book", "Parasha", "Chapter", "Verse", "Frequency")
+      } else {
+        if(Popular=="Book") {
+          colnames(diffdataframe) <- c("Book", "Frequency")
+        }
+      }
+    }
+  }
+  
+  
+  return(diffdataframe)
+}
+  
+library(shiny)
+
+selectInput("Different", "Different Parasha or Different Book?", c("Parasha", "Book"), multiple=FALSE)
+selectInput("Popular", "Most popular verse, chapter, parasha, or book?", c("Verse", "Chapter", "Parasha", "Book"))
+selectInput("Source", "The whole Torah or any one of the 5 books?", c("The Torah", "Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy"))
+numericInput("Vrss", "How many of the top verses, chapters, or parashas?", 10)
+
+renderTable({
+  CreateTable(input$Different, input$Popular, input$Source, input$Vrss)
+})
+
+```
+
+
+
+Here is a drop-down menu that shows the Biblical books outside of the 5 books of Moses that are most frequently cited by all the commentaries as well as the commentaries on each of the 5 books. 
+
+```{r, echo=FALSE, warning=FALSE}
+
+notTorahdataframe<-mydataframe[!(complete.cases(mydataframe)),]
+notTorahdataframe<-notTorahdataframe[!(notTorahdataframe$CitedBookOrder==41),]
+
+notTorah <- function(Surce, HowMany) {
+
+if (Surce=="The Torah") {
+  notTorahdataframe <- notTorahdataframe
+} else {
+  if (Surce=="Genesis") {
+    notTorahdataframe <- notTorahdataframe[notTorahdataframe$CommentaryBookOrder==1, ]
+} else {
+  if (Surce=="Exodus") {
+    notTorahdataframe <- notTorahdataframe[notTorahdataframe$CommentaryBookOrder==2, ]
+  } else {
+  if (Surce=="Leviticus") {
+    notTorahdataframe <- notTorahdataframe[notTorahdataframe$CommentaryBookOrder==3, ]
+  } else {
+  if (Surce=="Numbers") {
+    notTorahdataframe <- notTorahdataframe[notTorahdataframe$CommentaryBookOrder==4, ]
+  } else {
+  if (Surce=="Deuteronomy") {
+    notTorahdataframe <- notTorahdataframe[notTorahdataframe$CommentaryBookOrder==5, ]}
+  }
+  }
+  }
+}
+}
+
+
+library(plyr)
+qualities <- c("Book")
+frequency <- ddply(notTorahdataframe, qualities, nrow)
+notTorah5bookstable <- arrange(frequency, -V1)
+
+notTorah5bookstable <- head(notTorah5bookstable, HowMany)
+
+colnames(notTorah5bookstable) <- cbind("Book", "Frequency")
+
+return(notTorah5bookstable)
+
+}
+
+library(shiny)
+selectInput("Srce", "The whole Torah or any one of the 5 books?", c("The Torah", "Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy"), multiple=FALSE)
+numericInput("HwMany", "How many of the top books would you like to see?", 10)
+
+renderTable({
+  notTorah(input$Srce, input$HwMany)
+})
+
+```
+
+
+The next step of this analysis is to see which Books' commentaries have the highest percentages of verse citations within their own Books. Below is the table:
+
+```{r, echo=FALSE}
+library(knitr)
+
+thing <- mydataframe[!(mydataframe$CitedBookOrder==41),]
+
+percentbooktable <- c()
+for (i in 1:5) {thing2 <- thing[thing$CommentaryBookOrder==thing$CitedBookOrder,]
+
+thing2 <- thing2[thing2$CommentaryBookOrder==i, ]
+
+thing1 <- thing[thing$CommentaryBookOrder==i,]
+
+percentbooktable <- rbind(percentbooktable, round(nrow(thing2)/nrow(thing1), 3))
+}
+
+percentbooktable <- cbind(percentbooktable, c("Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy"))
+
+colnames(percentbooktable) <- c("Proportion of Commentaries' Cited Verses from Commentaries' Own Book",  "Book")
+
+percentbooktable <- percentbooktable[, c(2,1)]
+
+kable(percentbooktable)
+```
+
+
+The Genesis commentaries have the highest percentage of in-citations, followed by the Deuteronomy ones. 
+
+The proportions will change if we exclude verses cited from a commentary's own Parasha.
+
+```{r, echo=FALSE}
+ 
+davar <- mydataframe[!(mydataframe$CitedBookOrder==41), ]
+otherBooks <- davar[!(complete.cases(davar)), ]
+davar <- davar[(complete.cases(davar)), ]
+davar <- davar[davar$CommentaryParasha!=davar$CitedParasha, ]
+davar <- rbind(davar, otherBooks)
+
+percentbooktable1 <- c()
+for (i in 1:5) {davar2 <- davar[davar$CommentaryBookOrder==davar$CitedBookOrder, ]
+
+davar2 <- davar2[davar2$CommentaryBookOrder==i, ]
+
+davar1 <- davar[davar$CommentaryBookOrder==i, ]
+
+percentbooktable1 <- rbind(percentbooktable1, round(nrow(davar2)/nrow(davar1), 3))
+}
+
+percentbooktable1 <- cbind(percentbooktable1, c("Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy"))
+
+colnames(percentbooktable1) <- c("Proportion of Commentaries' Cited Verses from Different Parashas, from Commentaries' Own Book",  "Book")
+
+percentbooktable1 <- percentbooktable1[, c(2,1)]
+
+kable(percentbooktable1)
+```
+
+
+The commentaries on Genesis still have the highest proportion of citations within their own book, but Deuteronomy is now below Exodus.
+
+
+The final table shows the proportion of citations a given Parasha receives from commentaries outside of its own Parasha. This table gives a sense of how 'popular' the different Torah portions are as measured by what proportion of the times they're discussed, they're discussed by other Parasha's commentaries.
+```{r, echo=FALSE}
+
+df.list1Pop <- 
+  lapply(1:47, function(x) {round(nrow(df.list1[[x]][df.list1[[x]]$CommentaryParasha!=df.list1[[x]]$CitedParasha, ])/
+                                         nrow(df.list1[[x]]), 3)
+})
+
+df.1Pop <- as.data.frame(unlist(df.list1Pop))
+
+Popdataframe <- cbind(df.1Pop, c("Bereshit", "Noach", "Lech Lecha", "VaYera", "Chayei Sarah", 
+            "Toldot", "VaYetze", "VaYishlah", "VaYeshev", "Miketz",
+            "VaYiggash", "VaYechi", "Shemot", "VaEra", "Bo", 
+            "Beshallah", "Yitro", "Mishpatim", "Terumah", "Tetzaveh", 
+            "Ki Tissa", "VaYakhel-Pekudei", "VaYikra", "Tzav", "Shemini", "Tazria-Metzora",
+            "Aharei Mot-Kedoshim", "Emor", "Behar-Behukkotai", "BaMidbar", "Naso", 
+            "Behaalotcha", "Shlach Lecha", "Korach", "Chukat-Balak", "Pinchas", 
+            "Mattot-Masei", "Devarim", "Vaetchanan", "Eikev", "Reeh", "Shoftim", 
+            "Ki Tetze", "Ki Tavo", "Nitzavim-VaYelech", "Haazinu", "Vzot HaBracha"))
+
+colnames(Popdataframe) <- c("Proportion of Citations from outside own Parasha's commentaries", "Parasha")
+
+Popdataframe <- Popdataframe[, c(2,1)]
+
+Popdataframe <- Popdataframe[order(-Popdataframe[,2]), ]
+
+kable(Popdataframe)
+```
+
+
+The reason Parashat Vzot HaBracha is so high is because there are only two commentaries in the dataset written about it. The other high parashas on the list should not come as a surprise: these were also the Parashas whose nodes were largest on the graphs and include some of the highlights of the Torah. Apart from Vzot HaBracha, this list is one measure of the most 'popular' parashiyot in the Torah.
+
+Next steps:
+
+The same process could be repeated for other sets of Torah commentaries, including ones from different religious or ideological sects. It would be interested to compare if the same Parashas are cited most frequently and to explain why or why not they may differ. 
+
+Another cool next step could be to build some sort of classifier model that would predict which Parasha a given commentary belongs to. The classifier would probably be built using Cited Verses as the main predictor given that the majority of verses a particular commentary cites are from its own Parasha.
+
+Sources:
+
+Jewish Theological Seminary (http://www.jtsa.edu/jts-torah-online)
+
+R-packages used:
+
+-plyr
+-igraph
+-knitr
+-shiny
+-stringr
